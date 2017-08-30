@@ -1,20 +1,25 @@
 const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
+const chalk = require('chalk');
+const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const LessPluginAutoPrefix = require('less-plugin-autoprefix');
 const autoprefixBrowsers = ['last 2 versions', '> 1%', 'opera 12.1', 'bb 10', 'android 4'];
 
 const babelSettings = JSON.parse(fs.readFileSync('.babelrc'));
 
+const isProduction = process.env.NODE_ENV === 'production';
+const isDevelopment = process.env.NODE_ENV === "development";
+
 const config = {
     entry: './src/index.js',
     output: {
-        filename: 'bundle.js',
+        filename: 'semantic.js',
         path: path.join(__dirname, 'dist')
     },
     resolve: {
-        extensions: ['.js', '.jsx'],
+        extensions: ['.js', '.jsx', '.json'],
         alias: {
             // point all config ref in Semantic UI source files to our local config file
             '../../theme.config$': path.join(__dirname, 'src/semantic/theme.config')
@@ -31,7 +36,7 @@ const config = {
                             options: {
                                 sourceMap: true
                             }
-                        }, 
+                        },
                         {
                             loader: 'less-loader',
                             options: {
@@ -47,12 +52,16 @@ const config = {
                 })
             },
             {
-                test: /\.(png|gif|jpg|jpeg|svg|ttf|eot)$/,
+                test: /\.(jpe?g|gif|png)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
+                use: 'file-loader?name=images/[name].[ext]?[hash]'
+            },
+            {
+                test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
                 use: [
                     {
                         loader: 'file-loader',
                         options: {
-                            name: '[name].[ext]'
+                            name: 'fonts/[name].[ext]?[hash]'
                         }
                     }
                 ]
@@ -64,7 +73,8 @@ const config = {
                         loader: 'url-loader',
                         options: {
                             limit: 10000,
-                            mimetype: 'application/fontwoff'
+                            mimetype: 'application/font-woff',
+                            name: 'fonts/[name].[ext]'
                         }
                     }
                 ]
@@ -82,30 +92,60 @@ const config = {
         ]
     },
     plugins: [
-        // this handles the bundled .css output file
-        new ExtractTextPlugin({
-            filename: 'semantic.css'
-        }),
         new webpack.DefinePlugin({
             'process.env': {
-                'NODE_ENV': JSON.stringify(process.env.NODE_ENV)
+                'NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
             }
-        })     
+        }),
+        new ProgressBarPlugin({
+            format: 'starting: ' + chalk.magenta('build') + chalk.yellow(' [:bar] ') + chalk.green.bold(':percent') + chalk.red(' (:elapsed seconds)'),
+            width: 100,
+            clear: false
+        })
     ]
 };
 
-if (process.env.NODE_ENV === 'production') {
+
+if (isDevelopment) {
+    config.devtool = "#cheap-module-source-map";
+    // this handles the bundled .css output file
+    config.plugins.push(
+        new ExtractTextPlugin({
+            filename: 'semantic.css'
+        })
+    );
+}
+
+if (isProduction) {
+    config.plugins.push(
+        new ExtractTextPlugin({
+            filename: 'semantic.min.css'
+        })
+    );
     config.plugins.push(
         new webpack.optimize.UglifyJsPlugin({
-            compress: true,
+            compress: {
+                sequences: true,
+                properties: true,
+                dead_code: true,
+                drop_debugger: true,
+                conditionals: true,
+                comparisons: true,
+                unused: true,
+                if_return: true,
+                join_vars: true,
+                warnings: false
+            },
             mangle: true,
             beautify: false,
             sourceMap: false,
-            ie8: false
+            ie8: false,
+            output: {
+                comments: false
+            }
         })
-    )
-} else {
-    config.devtool = "#cheap-module-source-map";
+    );
+    config.output.filename = 'semantic.min.js';
 }
 
 module.exports = config;
