@@ -53,7 +53,7 @@ const config = {
             },
             {
                 test: /\.(jpe?g|gif|png)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                use: 'file-loader?name=images/[name].[ext]?[hash]'
+                use: 'file-loader?name=assets/images/[name].[ext]'
             },
             {
                 test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
@@ -61,7 +61,7 @@ const config = {
                     {
                         loader: 'file-loader',
                         options: {
-                            name: 'fonts/[name].[ext]?[hash]'
+                            name: 'assets/fonts/[name].[ext]'
                         }
                     }
                 ]
@@ -74,7 +74,7 @@ const config = {
                         options: {
                             limit: 10000,
                             mimetype: 'application/font-woff',
-                            name: 'fonts/[name].[ext]'
+                            name: 'assets/fonts/[name].[ext]'
                         }
                     }
                 ]
