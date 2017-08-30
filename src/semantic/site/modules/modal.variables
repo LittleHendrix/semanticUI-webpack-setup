@@ -1,3 +1,11 @@
 /*******************************
          Site Overrides
 *******************************/
+
+/* Header */
+@headerFontWeight: 400;
+@headerBorder: 0;
+
+/* Content */
+@contentFontSize: 13px;
+@contentPadding: 1.5rem 0;

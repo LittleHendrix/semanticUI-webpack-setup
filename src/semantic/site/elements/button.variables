@@ -1,3 +1,10 @@
 /*******************************
     User Variable Overrides
 *******************************/
+/* Text */
+@borderRadius: none;
+@textColor: rgba(0, 0, 0, 1);
+
+/* Pressed Down */
+@downBackgroundColor: #2197CA;
+@downColor: @white;
