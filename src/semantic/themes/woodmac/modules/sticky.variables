@@ -1,7 +1,7 @@
-/*******************************
-            Sticky
-*******************************/
+// /*******************************
+//             Sticky
+// *******************************/
 
-@transitionDuration: @defaultDuration;
-@transition: none;
-@zIndex: 800;
+// @transitionDuration: @defaultDuration;
+// @transition: none;
+// @zIndex: 800;

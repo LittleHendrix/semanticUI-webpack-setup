@@ -1,98 +1,98 @@
-/*******************************
-           Statistic
-*******************************/
+// /*******************************
+//            Statistic
+// *******************************/
 
-/*-------------------
-         View
---------------------*/
+// /*-------------------
+//          View
+// --------------------*/
 
-@margin: 1em 0em;
-@textAlign: center;
-@maxWidth: auto;
+// @margin: 1em 0em;
+// @textAlign: center;
+// @maxWidth: auto;
 
-/* Group */
-@horizontalSpacing: 1.5em;
-@rowSpacing: 2em;
-@groupMargin: 1em -@horizontalSpacing -@rowSpacing;
+// /* Group */
+// @horizontalSpacing: 1.5em;
+// @rowSpacing: 2em;
+// @groupMargin: 1em -@horizontalSpacing -@rowSpacing;
 
-/* Group Element */
-@elementMargin: 0em @horizontalSpacing @rowSpacing;
-@elementMaxWidth: @maxWidth;
+// /* Group Element */
+// @elementMargin: 0em @horizontalSpacing @rowSpacing;
+// @elementMaxWidth: @maxWidth;
 
-/*-------------------
-       Content
---------------------*/
+// /*-------------------
+//        Content
+// --------------------*/
 
-/* Value */
-@valueFont: @pageFont;
-@valueFontWeight: normal;
-@valueLineHeight: 1em;
-@valueColor: @black;
-@valueTextTransform: uppercase;
+// /* Value */
+// @valueFont: @pageFont;
+// @valueFontWeight: normal;
+// @valueLineHeight: 1em;
+// @valueColor: @black;
+// @valueTextTransform: uppercase;
 
-/* Label */
-@labelSize: @relativeMedium;
-@topLabelDistance: 0rem;
-@bottomLabelDistance: 0rem;
-@labelFont: @headerFont;
-@labelFontWeight: bold;
-@labelColor: @textColor;
-@labelLineHeight: @relativeLarge;
-@labelTextTransform: uppercase;
+// /* Label */
+// @labelSize: @relativeMedium;
+// @topLabelDistance: 0rem;
+// @bottomLabelDistance: 0rem;
+// @labelFont: @headerFont;
+// @labelFontWeight: bold;
+// @labelColor: @textColor;
+// @labelLineHeight: @relativeLarge;
+// @labelTextTransform: uppercase;
 
-/* Text */
-@textValueLineHeight: 1em;
-@textValueMinHeight: 2em;
-@textValueFontWeight: bold;
+// /* Text */
+// @textValueLineHeight: 1em;
+// @textValueMinHeight: 2em;
+// @textValueFontWeight: bold;
 
-/* Label Image */
-@imageHeight: 3rem;
-@imageVerticalAlign: baseline;
+// /* Label Image */
+// @imageHeight: 3rem;
+// @imageVerticalAlign: baseline;
 
-/*-------------------
-      Types
---------------------*/
+// /*-------------------
+//       Types
+// --------------------*/
 
-@horizontalGroupElementMargin: 1em 0em;
-@horizontalLabelDistance: 0.75em;
+// @horizontalGroupElementMargin: 1em 0em;
+// @horizontalLabelDistance: 0.75em;
 
-/*-------------------
-      Variations
---------------------*/
+// /*-------------------
+//       Variations
+// --------------------*/
 
-/* Floated */
-@leftFloatedMargin: 0em 2em 1em 0em;
-@rightFloatedMargin: 0em 0em 1em 2em;
+// /* Floated */
+// @leftFloatedMargin: 0em 2em 1em 0em;
+// @rightFloatedMargin: 0em 0em 1em 2em;
 
-/* Inverted */
-@invertedValueColor: @white;
-@invertedLabelColor: @invertedTextColor;
+// /* Inverted */
+// @invertedValueColor: @white;
+// @invertedLabelColor: @invertedTextColor;
 
-/* Item Width */
-@itemGroupMargin: 0em 0em -@rowSpacing;
-@itemMargin: 0em 0em @rowSpacing;
+// /* Item Width */
+// @itemGroupMargin: 0em 0em -@rowSpacing;
+// @itemMargin: 0em 0em @rowSpacing;
 
-/* Size */
-@miniTextValueSize: 1rem;
-@miniValueSize: 1.5rem;
-@miniHorizontalValueSize: 1.5rem;
+// /* Size */
+// @miniTextValueSize: 1rem;
+// @miniValueSize: 1.5rem;
+// @miniHorizontalValueSize: 1.5rem;
 
-@tinyTextValueSize: 1rem;
-@tinyValueSize: 2rem;
-@tinyHorizontalValueSize: 2rem;
+// @tinyTextValueSize: 1rem;
+// @tinyValueSize: 2rem;
+// @tinyHorizontalValueSize: 2rem;
 
-@smallTextValueSize: 1rem;
-@smallValueSize: 3rem;
-@smallHorizontalValueSize: 2rem;
+// @smallTextValueSize: 1rem;
+// @smallValueSize: 3rem;
+// @smallHorizontalValueSize: 2rem;
 
-@textValueSize: 2rem;
-@valueSize: 4rem;
-@horizontalValueSize: 3rem;
+// @textValueSize: 2rem;
+// @valueSize: 4rem;
+// @horizontalValueSize: 3rem;
 
-@largeTextValueSize: 2.5rem;
-@largeValueSize: 5rem;
-@largeHorizontalValueSize: 4rem;
+// @largeTextValueSize: 2.5rem;
+// @largeValueSize: 5rem;
+// @largeHorizontalValueSize: 4rem;
 
-@hugeTextValueSize: 2.5rem;
-@hugeValueSize: 6rem;
-@hugeHorizontalValueSize: 5rem;
+// @hugeTextValueSize: 2.5rem;
+// @hugeValueSize: 6rem;
+// @hugeHorizontalValueSize: 5rem;
