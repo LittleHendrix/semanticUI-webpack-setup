@@ -2,7 +2,6 @@ const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
 const chalk = require('chalk');
-const ProgressBarPlugin = require('progress-bar-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const LessPluginAutoPrefix = require('less-plugin-autoprefix');
 const autoprefixBrowsers = ['last 2 versions', '> 1%', 'opera 12.1', 'bb 10', 'android 4'];
@@ -96,18 +95,13 @@ const config = {
             'process.env': {
                 'NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
             }
-        }),
-        new ProgressBarPlugin({
-            format: 'starting: ' + chalk.magenta('build') + chalk.yellow(' [:bar] ') + chalk.green.bold(':percent') + chalk.red(' (:elapsed seconds)'),
-            width: 100,
-            clear: false
         })
     ]
 };
 
 
 if (isDevelopment) {
-    config.devtool = "#cheap-module-source-map";
+    config.devtool = "#cheap-module-eval-source-map";
     // this handles the bundled .css output file
     config.plugins.push(
         new ExtractTextPlugin({
