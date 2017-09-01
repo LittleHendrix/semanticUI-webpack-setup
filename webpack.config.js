@@ -15,7 +15,7 @@ const isDevelopment = process.env.NODE_ENV === "development";
 const config = {
     entry: './src/index.js',
     output: {
-        filename: 'semantic.js',
+        filename: 'semantic.min.js',
         path: path.join(__dirname, 'dist')
     },
     resolve: {
@@ -111,7 +111,7 @@ if (isDevelopment) {
     // this handles the bundled .css output file
     config.plugins.push(
         new ExtractTextPlugin({
-            filename: 'semantic.css'
+            filename: 'semantic.min.css'
         })
     );
 }
