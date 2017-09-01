@@ -1,34 +1,3 @@
 /*******************************
     User Variable Overrides
 *******************************/
-
-/*-------------------
-      Collection
---------------------*/
-
-/* Menu */
-
-@borderRadius: none;
-
-/* Divider */
-@dividerSize: 0px;
-@dividerBackground: none;
-
-/* Inverted Active */
-@invertedActiveColor: @blue;
-
-
-/*--------------
-     Types
----------------*/
-
-/* Vertical */
-@verticalBackground: #F8F8F8;
-
-
-/*--------------
-   Variations
----------------*/
-
-/* Inverted */
-@invertedBackground: @blueBackground;
