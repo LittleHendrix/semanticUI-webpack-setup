@@ -12,15 +12,20 @@ const isDevelopment = process.env.NODE_ENV === "development";
 
 const env = process.env.NODE_ENV || 'development';
 
+const PATHS = {
+    src: path.join(__dirname, 'src'),
+    dist: path.join(__dirname, 'dist')
+}
+
 const config = {
-    entry: path.join(__dirname, 'src', 'index.js'),
+    entry: path.join(PATHS.src, 'index.js'),
     output: {
         filename: 'semantic.min.js',
-        path: path.join(__dirname, 'dist')
+        path: PATHS.dist
     },
     devServer: {
         inline: true,
-        contentBase: path.join(__dirname, 'dist'),
+        contentBase: PATHS.dist,
         compress: true,
         host: 'localhost',
         port: 9000,
@@ -34,7 +39,7 @@ const config = {
         extensions: ['.js', '.jsx', '.json'],
         alias: {
             // point all config ref in Semantic UI source files to our local config file
-            '../../theme.config$': path.join(__dirname, 'src/semantic/theme.config')
+            '../../theme.config$': path.join(PATHS.src, 'semantic/theme.config')
         }
     },
     module: {
