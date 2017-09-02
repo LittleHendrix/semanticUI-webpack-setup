@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CompressionPlugin = require("compression-webpack-plugin");
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const LessPluginAutoPrefix = require('less-plugin-autoprefix');
 const autoprefixBrowsers = ['last 2 versions', '> 1%', 'opera 12.1', 'bb 10', 'android 4'];
@@ -192,6 +193,14 @@ if (isProduction) {
             test: /\.(js|css|html)$/,
             threshold: 10240,
             minRatio: 0.8
+        })
+    );
+    config.plugins.push(
+        new CleanWebpackPlugin([PATHS.dist], {
+            root: __dirname,
+            verbose: true,
+            dry: false,
+            exclude: ['index.html']
         })
     );
     config.output.filename = 'semantic.min.js';
