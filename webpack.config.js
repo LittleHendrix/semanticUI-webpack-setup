@@ -1,6 +1,7 @@
 const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const LessPluginAutoPrefix = require('less-plugin-autoprefix');
 const autoprefixBrowsers = ['last 2 versions', '> 1%', 'opera 12.1', 'bb 10', 'android 4'];
@@ -10,6 +11,7 @@ const babelSettings = JSON.parse(fs.readFileSync('.babelrc'));
 const isProduction = process.env.NODE_ENV === 'production';
 const isDevelopment = process.env.NODE_ENV === "development";
 
+const analyze = !!process.env.ANALYZE_ENV;
 const env = process.env.NODE_ENV || 'development';
 
 const PATHS = {
@@ -121,6 +123,24 @@ const config = {
     ]
 };
 
+if (analyze) {
+    config.plugins.push(
+        new BundleAnalyzerPlugin({
+            analyzerMode: 'server',
+            analyzerHost: '127.0.0.1',
+            analyzerPort: 8888,
+            reportFilename: 'report.html',
+            // Should be one of `stat`, `parsed` or `gzip`. 
+            defaultSizes: 'parsed',
+            openAnalyzer: true,
+            generateStatsFile: false,
+            statsFilename: 'stats.json',
+            statsOptions: null,
+            // Log level. Can be 'info', 'warn', 'error' or 'silent'. 
+            logLevel: 'info'
+        })
+    );
+}
 
 if (isDevelopment) {
     config.devtool = "#cheap-module-eval-source-map";
