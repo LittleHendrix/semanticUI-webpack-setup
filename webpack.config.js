@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const CompressionPlugin = require("compression-webpack-plugin");
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const LessPluginAutoPrefix = require('less-plugin-autoprefix');
 const autoprefixBrowsers = ['last 2 versions', '> 1%', 'opera 12.1', 'bb 10', 'android 4'];
@@ -100,7 +101,7 @@ const config = {
             },
             {
                 test: /\.(js|jsx)$/,
-                include: path.join(__dirname, 'src'),
+                include: PATHS.src,
                 use: [
                     {
                         loader: 'babel-loader',
@@ -143,7 +144,16 @@ if (analyze) {
 }
 
 if (isDevelopment) {
-    config.devtool = "#cheap-module-eval-source-map";
+    config.devtool = '#cheap-module-eval-source-map';
+    config.plugins.push(
+        new webpack.LoaderOptionsPlugin({
+            minimize: true,
+            debug: false,
+            options: {
+                context: __dirname
+            }
+        })
+    );
 }
 
 if (isProduction) {
@@ -173,6 +183,15 @@ if (isProduction) {
             output: {
                 comments: false
             }
+        })
+    );
+    config.plugins.push(
+        new CompressionPlugin({
+            asset: '[path].gz[query]',
+            algorithm: 'gzip',
+            test: /\.(js|css|html)$/,
+            threshold: 10240,
+            minRatio: 0.8
         })
     );
     config.output.filename = 'semantic.min.js';
