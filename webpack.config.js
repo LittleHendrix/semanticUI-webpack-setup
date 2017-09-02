@@ -1,7 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
-const chalk = require('chalk');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const LessPluginAutoPrefix = require('less-plugin-autoprefix');
 const autoprefixBrowsers = ['last 2 versions', '> 1%', 'opera 12.1', 'bb 10', 'android 4'];
@@ -11,11 +10,25 @@ const babelSettings = JSON.parse(fs.readFileSync('.babelrc'));
 const isProduction = process.env.NODE_ENV === 'production';
 const isDevelopment = process.env.NODE_ENV === "development";
 
+const env = process.env.NODE_ENV || 'development';
+
 const config = {
-    entry: './src/index.js',
+    entry: path.join(__dirname, 'src', 'index.js'),
     output: {
         filename: 'semantic.min.js',
         path: path.join(__dirname, 'dist')
+    },
+    devServer: {
+        inline: true,
+        contentBase: path.join(__dirname, 'dist'),
+        compress: true,
+        host: 'localhost',
+        port: 9000,
+        overlay: {
+            warning: true,
+            errors: true
+        },
+        watchContentBase: true
     },
     resolve: {
         extensions: ['.js', '.jsx', '.json'],
@@ -93,8 +106,12 @@ const config = {
     plugins: [
         new webpack.DefinePlugin({
             'process.env': {
-                'NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+                'NODE_ENV': JSON.stringify(env)
             }
+        }),
+        // this handles the bundled .css output file
+        new ExtractTextPlugin({
+            filename: 'semantic.min.css'
         })
     ]
 };
@@ -102,12 +119,6 @@ const config = {
 
 if (isDevelopment) {
     config.devtool = "#cheap-module-eval-source-map";
-    // this handles the bundled .css output file
-    config.plugins.push(
-        new ExtractTextPlugin({
-            filename: 'semantic.min.css'
-        })
-    );
 }
 
 if (isProduction) {

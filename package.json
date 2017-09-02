@@ -4,8 +4,9 @@
   "description": "UDT semantic UI theme",
   "main": "index.js",
   "scripts": {
-    "start": "cross-env NODE_ENV=development webpack --watch",
-    "build": "cross-env NODE_ENV=production webpack -p --progress",
+    "start": "webpack-dev-server --open --progress --colors",
+    "watch": "cross-env NODE_ENV=development webpack --watch --progress --colors",
+    "build": "cross-env NODE_ENV=production webpack -p --progress --colors",
     "deploy": "",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -27,6 +28,7 @@
     "less-loader": "^4.0.5",
     "less-plugin-autoprefix": "^1.5.1",
     "url-loader": "^0.5.9",
-    "webpack": "^3.5.5"
+    "webpack": "^3.5.5",
+    "webpack-dev-server": "^2.7.1"
   }
 }
