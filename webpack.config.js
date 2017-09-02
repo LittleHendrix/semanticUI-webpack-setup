@@ -1,7 +1,9 @@
 const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
-const chalk = require('chalk');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const CompressionPlugin = require("compression-webpack-plugin");
+const CleanWebpackPlugin = require('clean-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const LessPluginAutoPrefix = require('less-plugin-autoprefix');
 const autoprefixBrowsers = ['last 2 versions', '> 1%', 'opera 12.1', 'bb 10', 'android 4'];
@@ -11,17 +13,37 @@ const babelSettings = JSON.parse(fs.readFileSync('.babelrc'));
 const isProduction = process.env.NODE_ENV === 'production';
 const isDevelopment = process.env.NODE_ENV === "development";
 
+const analyze = !!process.env.ANALYZE_ENV;
+const env = process.env.NODE_ENV || 'development';
+
+const PATHS = {
+    src: path.join(__dirname, 'src'),
+    dist: path.join(__dirname, 'dist')
+}
+
 const config = {
-    entry: './src/index.js',
+    entry: path.join(PATHS.src, 'index.js'),
     output: {
         filename: 'semantic.min.js',
-        path: path.join(__dirname, 'dist')
+        path: PATHS.dist
+    },
+    devServer: {
+        inline: true,
+        contentBase: PATHS.dist,
+        compress: true,
+        host: 'localhost',
+        port: 9000,
+        overlay: {
+            warning: true,
+            errors: true
+        },
+        watchContentBase: true
     },
     resolve: {
         extensions: ['.js', '.jsx', '.json'],
         alias: {
             // point all config ref in Semantic UI source files to our local config file
-            '../../theme.config$': path.join(__dirname, 'src/semantic/theme.config')
+            '../../theme.config$': path.join(PATHS.src, 'semantic/theme.config')
         }
     },
     module: {
@@ -80,7 +102,7 @@ const config = {
             },
             {
                 test: /\.(js|jsx)$/,
-                include: path.join(__dirname, 'src'),
+                include: PATHS.src,
                 use: [
                     {
                         loader: 'babel-loader',
@@ -93,19 +115,44 @@ const config = {
     plugins: [
         new webpack.DefinePlugin({
             'process.env': {
-                'NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+                'NODE_ENV': JSON.stringify(env)
             }
+        }),
+        // this handles the bundled .css output file
+        new ExtractTextPlugin({
+            filename: 'semantic.min.css'
         })
     ]
 };
 
+if (analyze) {
+    config.plugins.push(
+        new BundleAnalyzerPlugin({
+            analyzerMode: 'server',
+            analyzerHost: '127.0.0.1',
+            analyzerPort: 8888,
+            reportFilename: 'report.html',
+            // Should be one of `stat`, `parsed` or `gzip`. 
+            defaultSizes: 'parsed',
+            openAnalyzer: true,
+            generateStatsFile: false,
+            statsFilename: 'stats.json',
+            statsOptions: null,
+            // Log level. Can be 'info', 'warn', 'error' or 'silent'. 
+            logLevel: 'info'
+        })
+    );
+}
 
 if (isDevelopment) {
-    config.devtool = "#cheap-module-eval-source-map";
-    // this handles the bundled .css output file
+    config.devtool = '#cheap-module-eval-source-map';
     config.plugins.push(
-        new ExtractTextPlugin({
-            filename: 'semantic.min.css'
+        new webpack.LoaderOptionsPlugin({
+            minimize: true,
+            debug: false,
+            options: {
+                context: __dirname
+            }
         })
     );
 }
@@ -137,6 +184,23 @@ if (isProduction) {
             output: {
                 comments: false
             }
+        })
+    );
+    config.plugins.push(
+        new CompressionPlugin({
+            asset: '[path].gz[query]',
+            algorithm: 'gzip',
+            test: /\.(js|css|html)$/,
+            threshold: 10240,
+            minRatio: 0.8
+        })
+    );
+    config.plugins.push(
+        new CleanWebpackPlugin([PATHS.dist], {
+            root: __dirname,
+            verbose: true,
+            dry: false,
+            exclude: ['index.html']
         })
     );
     config.output.filename = 'semantic.min.js';
