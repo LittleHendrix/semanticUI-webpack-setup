@@ -3,6 +3,7 @@ const path = require('path');
 const fs = require('fs');
 const merge = require('webpack-merge');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CompressionPlugin = require("compression-webpack-plugin");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
@@ -122,23 +123,27 @@ const config = {
         }),
         new HtmlWebpackPlugin({
             title: 'Semantic UI theme starter kit',
-            tilename: 'index.html',
-            inject: false,
-            template: require('html-webpack-template'),
-            appMountId: 'app',
-            // devServer: 'http://localhost:3001',
-            // googleAnalytics: {
-            //     trackingId: 'UA-XXXX-XX',
-            //     pageViewOnLoad: true
-            // },
-            meta: [
-                {
-                    name: 'description',
-                    content: 'Semantic UI theme development starter kit with webpack'
-                }
-            ],
-            mobile: true,
-            lang: 'en-GB'
+            filename: 'index.html',
+            inject: true
+        }),
+        new FaviconsWebpackPlugin({
+            logo: path.join(PATHS.src, 'woodmac-logo.png'),
+            prefix: 'icons-[hash]/',
+            persistentCache: true,
+            inject: true,
+            background: '#fff',
+            icons: {
+                android: true,
+                appleIcon: true,
+                appleStartup: true,
+                coast: false,
+                favicons: true,
+                firefox: true,
+                opengraph: false,
+                twitter: false,
+                yandex: false,
+                windows: false
+            }
         }),
         // this handles the bundled .css output file
         new ExtractTextPlugin({
