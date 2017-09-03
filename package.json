@@ -6,7 +6,7 @@
   "scripts": {
     "start": "webpack-dev-server --open --progress --colors",
     "analyze": "cross-env ANALYZE_ENV=true npm run build",
-    "watch": "cross-env NODE_ENV=development webpack --watch --progress --colors",
+    "watch": "cross-env NODE_ENV=development webpack -d --watch --progress --colors",
     "build": "cross-env NODE_ENV=production webpack -p --progress --colors",
     "deploy": "",
     "test": "echo \"Error: no test specified\" && exit 1"
@@ -27,6 +27,7 @@
     "css-loader": "^0.28.5",
     "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^0.11.2",
+    "html-webpack-plugin": "^2.30.1",
     "less": "^2.7.2",
     "less-loader": "^4.0.5",
     "less-plugin-autoprefix": "^1.5.1",

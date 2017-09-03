@@ -2,6 +2,7 @@ const webpack = require('webpack');
 const path = require('path');
 const fs = require('fs');
 const merge = require('webpack-merge');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 const CompressionPlugin = require("compression-webpack-plugin");
 const CleanWebpackPlugin = require('clean-webpack-plugin');
@@ -118,6 +119,9 @@ const config = {
             'process.env': {
                 'NODE_ENV': JSON.stringify(env)
             }
+        }), 
+        new HtmlWebpackPlugin({
+            title: 'Semantic UI theme starter kit',
         }),
         // this handles the bundled .css output file
         new ExtractTextPlugin({
