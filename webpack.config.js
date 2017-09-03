@@ -227,7 +227,7 @@ if (isProduction) {
             root: __dirname,
             verbose: true,
             dry: false,
-            exclude: ['index.html']
+            exclude: []
         })
     );
     config.output.filename = 'semantic.min.js';
