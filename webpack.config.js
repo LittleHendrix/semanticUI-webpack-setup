@@ -34,7 +34,7 @@ const config = {
         contentBase: PATHS.dist,
         compress: true,
         host: 'localhost',
-        port: 9000,
+        port: 3001,
         overlay: {
             warning: true,
             errors: true
@@ -119,9 +119,26 @@ const config = {
             'process.env': {
                 'NODE_ENV': JSON.stringify(env)
             }
-        }), 
+        }),
         new HtmlWebpackPlugin({
             title: 'Semantic UI theme starter kit',
+            tilename: 'index.html',
+            inject: false,
+            template: require('html-webpack-template'),
+            appMountId: 'app',
+            // devServer: 'http://localhost:3001',
+            // googleAnalytics: {
+            //     trackingId: 'UA-XXXX-XX',
+            //     pageViewOnLoad: true
+            // },
+            meta: [
+                {
+                    name: 'description',
+                    content: 'Semantic UI theme development starter kit with webpack'
+                }
+            ],
+            mobile: true,
+            lang: 'en-GB'
         }),
         // this handles the bundled .css output file
         new ExtractTextPlugin({
