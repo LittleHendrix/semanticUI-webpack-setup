@@ -34,8 +34,8 @@ const config = {
         inline: true,
         contentBase: PATHS.dist,
         compress: true,
-        host: 'localhost',
-        port: 3001,
+        host: process.env.HOST, // Defaults to 'localhost'
+        port: process.env.PORT, // Defaults to 8080
         overlay: {
             warning: true,
             errors: true
