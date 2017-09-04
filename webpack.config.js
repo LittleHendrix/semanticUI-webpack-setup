@@ -39,6 +39,7 @@ const commonConfig = merge([
     parts.loadFonts(),
     parts.loadJs({
         include: CONFIG.PATHS.src,
+        exclude: /(node_modules|bower_components)/,
         use: [
             {
                 loader: 'babel-loader',
