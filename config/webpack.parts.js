@@ -1,9 +1,11 @@
 const webpack = require('webpack');
 const path = require('path');
-const fs = require('fs');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
+const CompressionPlugin = require("compression-webpack-plugin");
+const CleanWebpackPlugin = require('clean-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 const CONFIG = require('./config');
 
@@ -61,31 +63,60 @@ exports.loadCommonPlugins = () => ({
     ]
 });
 
-exports.loadJs = () => {
-    
-    const babelSettings = JSON.parse(fs.readFileSync('.babelrc'));
+exports.loadProductionPlugins = () => ({
+    plugins: [
+        new webpack.optimize.UglifyJsPlugin({
+            compress: {
+                sequences: true,
+                properties: true,
+                dead_code: true,
+                drop_debugger: true,
+                conditionals: true,
+                comparisons: true,
+                unused: true,
+                if_return: true,
+                join_vars: true,
+                warnings: false
+            },
+            mangle: true,
+            beautify: false,
+            sourceMap: false,
+            ie8: false,
+            output: {
+                comments: false
+            }
+        }),
+        new CompressionPlugin({
+            asset: '[path].gz[query]',
+            algorithm: 'gzip',
+            test: /\.(js|css|html)$/,
+            threshold: 10240,
+            minRatio: 0.8
+        }),
+        new CleanWebpackPlugin([CONFIG.PATHS.dist], {
+            root: CONFIG.PATHS.root,
+            verbose: true,
+            dry: false,
+            exclude: []
+        })
+    ]
+});
 
-    return {
-        module: {
-            rules: [
-                {
-                    test: /\.(js|jsx)$/,
-                    include: CONFIG.PATHS.src,
-                    use: [
-                        {
-                            loader: 'babel-loader',
-                            options: babelSettings
-                        }
-                    ]
-                }
-            ]
-        }
+exports.loadJs = ({ include, exclude, use } = {}) => ({
+    module: {
+        rules: [
+            {
+                test: /\.(js|jsx)$/,
+                include,
+                use
+            }
+        ]
     }
-};
+});
 
 exports.extractCSS = ({ filename, include, exclude, use } = {}) => {
     const plugin = new ExtractTextPlugin({
-       filename
+        filename
     });
 
     return {
@@ -93,7 +124,7 @@ exports.extractCSS = ({ filename, include, exclude, use } = {}) => {
             rules: [
                 {
                     test: /\.less$/,
-                    include, 
+                    include,
                     exclude,
                     use: plugin.extract({
                         use
@@ -101,7 +132,7 @@ exports.extractCSS = ({ filename, include, exclude, use } = {}) => {
                 }
             ]
         },
-        plugins: [ plugin ]
+        plugins: [plugin]
     };
 
 };
@@ -146,4 +177,23 @@ exports.loadFonts = () => ({
             }
         ]
     }
+});
+
+exports.loadAnalyzer = () => ({
+    plugins: [
+        new BundleAnalyzerPlugin({
+            analyzerMode: 'server',
+            analyzerHost: '127.0.0.1',
+            analyzerPort: 8888,
+            reportFilename: 'report.html',
+            // Should be one of `stat`, `parsed` or `gzip`. 
+            defaultSizes: 'parsed',
+            openAnalyzer: true,
+            generateStatsFile: false,
+            statsFilename: 'stats.json',
+            statsOptions: null,
+            // Log level. Can be 'info', 'warn', 'error' or 'silent'. 
+            logLevel: 'info'
+        })
+    ]
 });

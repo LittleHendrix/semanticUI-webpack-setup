@@ -6,7 +6,7 @@
   "scripts": {
     "start": "nodemon --watch webpack.config.js --exec \"webpack-dev-server --open --progress --colors\"",
     "analyze": "cross-env ANALYZE_ENV=true npm run build",
-    "watch": "webpack --env development --watch --progress --colors",
+    "watch": "cross-env NODE_ENV=development webpack -d --watch --progress --colors",
     "build": "cross-env NODE_ENV=production webpack -p --progress --colors",
     "deploy": "",
     "test": "echo \"Error: no test specified\" && exit 1"
