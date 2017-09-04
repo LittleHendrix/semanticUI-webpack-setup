@@ -1,10 +1,10 @@
 {
-  "name": "udt-semantic-ui",
+  "name": "semantic-ui-starter-kit",
   "version": "1.0.0",
-  "description": "UDT semantic UI theme",
+  "description": "Semantic UI theme development webpack starter kit",
   "main": "index.js",
   "scripts": {
-    "start": "webpack-dev-server --open --progress --colors",
+    "start": "nodemon --watch webpack.config.js --exec \"webpack-dev-server --open --progress --colors\"",
     "analyze": "cross-env ANALYZE_ENV=true npm run build",
     "watch": "cross-env NODE_ENV=development webpack -d --watch --progress --colors",
     "build": "cross-env NODE_ENV=production webpack -p --progress --colors",
@@ -32,6 +32,7 @@
     "less": "^2.7.2",
     "less-loader": "^4.0.5",
     "less-plugin-autoprefix": "^1.5.1",
+    "nodemon": "^1.11.0",
     "url-loader": "^0.5.9",
     "webpack": "^3.5.5",
     "webpack-bundle-analyzer": "^2.9.0",
