@@ -1,210 +1,103 @@
 const webpack = require('webpack');
 const path = require('path');
-const fs = require('fs');
 const merge = require('webpack-merge');
-const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
-const CompressionPlugin = require("compression-webpack-plugin");
-const CleanWebpackPlugin = require('clean-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
-const LessPluginAutoPrefix = require('less-plugin-autoprefix');
-const autoprefixBrowsers = ['last 2 versions', '> 1%', 'opera 12.1', 'bb 10', 'android 4'];
 
-const babelSettings = JSON.parse(fs.readFileSync('.babelrc'));
+const ANALYZE_ENV = !!process.env.ANALYZE_ENV;
 
-const isProduction = process.env.NODE_ENV === 'production';
-const isDevelopment = process.env.NODE_ENV === "development";
+/************************************* WEBPACK CONFIG OPTIONS *************************************/
+const CONFIG = require('./config/config');
+const loaders = require('./config/loaders-webpack.config');
+const pluginsConfig = require('./config/plugins-webpack.config')(CONFIG.env, ANALYZE_ENV);
 
-const analyze = !!process.env.ANALYZE_ENV;
-const env = process.env.NODE_ENV || 'development';
 
-const PATHS = {
-    src: path.join(__dirname, 'src'),
-    dist: path.join(__dirname, 'dist')
-}
-
-const config = {
-    entry: path.join(PATHS.src, 'index.js'),
-    output: {
-        filename: 'semantic.min.js',
-        path: PATHS.dist
-    },
-    devServer: {
-        inline: true,
-        contentBase: PATHS.dist,
-        compress: true,
-        host: 'localhost',
-        port: 9000,
-        overlay: {
-            warning: true,
-            errors: true
+/********************** WEBPACK DEVELOPMENT CONFIG (MERGES INTO BASE CONFIG) **********************/
+/**
+ * Development-specific webpack configuration (settings of keys not provided to the
+ * production config, and keys with little config overlap between dev and prod).
+ * @type {Object}
+ */
+const webpackDevOptions = merge([
+    {
+        devtool: '#cheap-module-eval-source-map',
+        devServer: {
+            historyApiFallback: true,
+            stats: 'errors-only',
+            compress: true,
+            contentBase: CONFIG.PATHS.dist,
+            host: CONFIG.host.DEV_HOST,
+            port: CONFIG.port.DEV_PORT,
+            inline: true,
+            hot: true,
+            noInfo: true,
+            overlay: {
+                errors: true,
+                warnings: true,
+            },
+            watchContentBase: true
         },
-        watchContentBase: true
-    },
-    resolve: {
-        extensions: ['.js', '.jsx', '.json'],
-        alias: {
-            // point all config ref in Semantic UI source files to our local config file
-            '../../theme.config$': path.join(PATHS.src, 'semantic/theme.config')
+        output: {
+            path: CONFIG.PATHS.dist,
+            filename: "semantic.min.js"
+        },
+    }
+]);
+
+/********************** WEBPACK PRODUCTION CONFIG (MERGES INTO BASE CONFIG) ***********************/
+/**
+ * Production-specific webpack configuration
+ * @type {Object}
+ */
+const webpackProdOptions = merge([
+    {
+        output: {
+            path: CONFIG.PATHS.dist,
+            publicPath: "/",
+            filename: "semantic.min.js"
         }
-    },
-    module: {
-        rules: [
-            {
-                test: /\.less$/,
-                use: ExtractTextPlugin.extract({
-                    use: [
-                        {
-                            loader: 'css-loader',
-                            options: {
-                                sourceMap: true
-                            }
-                        },
-                        {
-                            loader: 'less-loader',
-                            options: {
-                                strictMath: false,
-                                noIeCompat: true,
-                                sourceMap: true,
-                                plugins: [
-                                    new LessPluginAutoPrefix({ browsers: autoprefixBrowsers })
-                                ]
-                            }
-                        }
-                    ]
-                })
-            },
-            {
-                test: /\.(jpe?g|gif|png)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                use: 'file-loader?name=assets/images/[name].[ext]'
-            },
-            {
-                test: /\.(ttf|eot|svg)(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                use: [
-                    {
-                        loader: 'file-loader',
-                        options: {
-                            name: 'assets/fonts/[name].[ext]'
-                        }
-                    }
-                ]
-            },
-            {
-                test: /\.woff(2)?(\?v=[0-9]\.[0-9]\.[0-9])?$/,
-                use: [
-                    {
-                        loader: 'url-loader',
-                        options: {
-                            limit: 10000,
-                            mimetype: 'application/font-woff',
-                            name: 'assets/fonts/[name].[ext]'
-                        }
-                    }
-                ]
-            },
-            {
-                test: /\.(js|jsx)$/,
-                include: PATHS.src,
-                use: [
-                    {
-                        loader: 'babel-loader',
-                        options: babelSettings
-                    }
-                ]
+    }
+]);
+
+/*********************************** BASE WEBPACK CONFIG OBJECT ***********************************/
+/**
+ * Actual webpack config object.
+ * Environment-specific Webpack settings get merged into this base object.
+ */
+const webpackConfig = merge([
+    {
+        watch: (CONFIG.env === 'development'),
+
+        context: CONFIG.PATHS.root,
+        entry: path.join(CONFIG.PATHS.src, 'index.js'),
+
+        output: {
+            path: CONFIG.PATHS.dist,
+            filename: "semantic.min.js",
+        },
+
+        module: {
+            rules: loaders
+        },
+        plugins: pluginsConfig,
+        resolve: {
+            extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
+            alias: {
+                // point all config ref in Semantic UI source files to our local config file
+                '../../theme.config$': path.join(CONFIG.PATHS.src, 'semantic/theme.config')
             }
-        ]
-    },
-    plugins: [
-        new webpack.DefinePlugin({
-            'process.env': {
-                'NODE_ENV': JSON.stringify(env)
-            }
-        }),
-        // this handles the bundled .css output file
-        new ExtractTextPlugin({
-            filename: 'semantic.min.css'
-        })
-    ]
+        }
+    }
+    // ENVIRONMENT SPECIFIC BUILD OPTIONS
+    // (CONFIG.env === 'development') ? webpackDevOptions : webpackProdOptions
+]);
+
+module.exports = (NODE_ENV = CONFIG.env) => {
+    if (ANALYZE_ENV) {
+        return webpackConfig;
+    }
+
+    if (NODE_ENV === 'production') {
+        return merge(webpackConfig, webpackProdOptions);
+    }
+
+    return merge(webpackConfig, webpackDevOptions);
 };
-
-if (analyze) {
-    config.plugins.push(
-        new BundleAnalyzerPlugin({
-            analyzerMode: 'server',
-            analyzerHost: '127.0.0.1',
-            analyzerPort: 8888,
-            reportFilename: 'report.html',
-            // Should be one of `stat`, `parsed` or `gzip`. 
-            defaultSizes: 'parsed',
-            openAnalyzer: true,
-            generateStatsFile: false,
-            statsFilename: 'stats.json',
-            statsOptions: null,
-            // Log level. Can be 'info', 'warn', 'error' or 'silent'. 
-            logLevel: 'info'
-        })
-    );
-}
-
-if (isDevelopment) {
-    config.devtool = '#cheap-module-eval-source-map';
-    config.plugins.push(
-        new webpack.LoaderOptionsPlugin({
-            minimize: true,
-            debug: false,
-            options: {
-                context: __dirname
-            }
-        })
-    );
-}
-
-if (isProduction) {
-    config.plugins.push(
-        new ExtractTextPlugin({
-            filename: 'semantic.min.css'
-        })
-    );
-    config.plugins.push(
-        new webpack.optimize.UglifyJsPlugin({
-            compress: {
-                sequences: true,
-                properties: true,
-                dead_code: true,
-                drop_debugger: true,
-                conditionals: true,
-                comparisons: true,
-                unused: true,
-                if_return: true,
-                join_vars: true,
-                warnings: false
-            },
-            mangle: true,
-            beautify: false,
-            sourceMap: false,
-            ie8: false,
-            output: {
-                comments: false
-            }
-        })
-    );
-    config.plugins.push(
-        new CompressionPlugin({
-            asset: '[path].gz[query]',
-            algorithm: 'gzip',
-            test: /\.(js|css|html)$/,
-            threshold: 10240,
-            minRatio: 0.8
-        })
-    );
-    config.plugins.push(
-        new CleanWebpackPlugin([PATHS.dist], {
-            root: __dirname,
-            verbose: true,
-            dry: false,
-            exclude: ['index.html']
-        })
-    );
-    config.output.filename = 'semantic.min.js';
-}
-
-module.exports = config;
