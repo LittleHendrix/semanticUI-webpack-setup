@@ -44,7 +44,18 @@ const basePlugins = (NODE_ENV, ANALYZE_ENV) => [
             favicons: true,
             windows: false
         }
+    }),
+    new webpack.ProvidePlugin({
+        $: 'jquery',
+        jQuery: 'jquery'
     })
+];
+
+/**
+ * Development-only Webpack plugins
+ */
+const devPlugins = [
+    new webpack.HotModuleReplacementPlugin()
 ];
 
 /**
@@ -113,6 +124,7 @@ const analyzerPlugins = [
 module.exports = (NODE_ENV = 'development', ANALYZE_ENV = false) => {
     const plugins = basePlugins(NODE_ENV, ANALYZE_ENV)
         .concat((NODE_ENV === 'production') ? prodPlugins : [])
+        .concat((NODE_ENV === 'development') ? devPlugins : [])
         .concat((ANALYZE_ENV) ? analyzerPlugins: []);
 
     return plugins;
