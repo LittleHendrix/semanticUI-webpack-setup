@@ -2,78 +2,102 @@ const webpack = require('webpack');
 const path = require('path');
 const merge = require('webpack-merge');
 
+const ANALYZE_ENV = !!process.env.ANALYZE_ENV;
+
+/************************************* WEBPACK CONFIG OPTIONS *************************************/
 const CONFIG = require('./config/config');
-const parts = require('./config/webpack.parts');
+const loaders = require('./config/loaders-webpack.config');
+const pluginsConfig = require('./config/plugins-webpack.config')(CONFIG.env, ANALYZE_ENV);
 
-const analyze = !!process.env.ANALYZE_ENV;
 
-const commonConfig = merge([
+/********************** WEBPACK DEVELOPMENT CONFIG (MERGES INTO BASE CONFIG) **********************/
+/**
+ * Development-specific webpack configuration (settings of keys not provided to the
+ * production config, and keys with little config overlap between dev and prod).
+ * @type {Object}
+ */
+const webpackDevOptions = merge([
     {
-        entry: path.join(CONFIG.PATHS.src, 'index.js'),
+        devtool: '#cheap-module-eval-source-map',
+        devServer: {
+            historyApiFallback: true,
+            stats: 'errors-only',
+            compress: true,
+            contentBase: CONFIG.PATHS.dist,
+            host: CONFIG.host.DEV_HOST,
+            port: CONFIG.port.DEV_PORT,
+            inline: true,
+            hot: true,
+            noInfo: true,
+            overlay: {
+                errors: true,
+                warnings: true,
+            },
+            watchContentBase: true
+        },
         output: {
             path: CONFIG.PATHS.dist,
-            filename: 'semantic.min.js'
+            filename: "semantic.min.js"
         },
+    }
+]);
+
+/********************** WEBPACK PRODUCTION CONFIG (MERGES INTO BASE CONFIG) ***********************/
+/**
+ * Production-specific webpack configuration
+ * @type {Object}
+ */
+const webpackProdOptions = merge([
+    {
+        output: {
+            path: CONFIG.PATHS.dist,
+            publicPath: "/",
+            filename: "semantic.min.js"
+        }
+    }
+]);
+
+/*********************************** BASE WEBPACK CONFIG OBJECT ***********************************/
+/**
+ * Actual webpack config object.
+ * Environment-specific Webpack settings get merged into this base object.
+ */
+const webpackConfig = merge([
+    {
+        watch: (CONFIG.env === 'development'),
+
+        context: CONFIG.PATHS.root,
+        entry: path.join(CONFIG.PATHS.src, 'index.js'),
+
+        output: {
+            path: CONFIG.PATHS.dist,
+            filename: "semantic.min.js",
+        },
+
+        module: {
+            rules: loaders
+        },
+        plugins: pluginsConfig,
         resolve: {
-            extensions: ['.js', '.jsx', '.json'],
+            extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
             alias: {
                 // point all config ref in Semantic UI source files to our local config file
                 '../../theme.config$': path.join(CONFIG.PATHS.src, 'semantic/theme.config')
             }
-        },
-    },    
-    parts.extractCSS({
-        filename: 'semantic.min.css',
-        use: [
-            {
-                loader: 'css-loader',
-                options: CONFIG.cssLoaderOptions
-            },
-            {
-                loader: 'less-loader',
-                options: CONFIG.lessOptions
-            }
-        ]
-    }),
-    parts.loadImages(),
-    parts.loadFonts(),
-    parts.loadJs({
-        include: CONFIG.PATHS.src,
-        exclude: /(node_modules|bower_components)/,
-        use: [
-            {
-                loader: 'babel-loader',
-                options: CONFIG.babelSettings
-            }
-        ]
-    }),
-    parts.loadCommonPlugins()
+        }
+    }
+    // ENVIRONMENT SPECIFIC BUILD OPTIONS
+    // (CONFIG.env === 'development') ? webpackDevOptions : webpackProdOptions
 ]);
 
-const analyzeConfig = merge([
-    parts.loadAnalyzer()
-]);
-
-const devConfig = merge([
-    parts.devServer({
-        contentBase: CONFIG.PATHS.dist,
-        host: process.env.HOST || 'localhost',
-        port: process.env.PORT || 8080
-    })
-]);
-
-const prodConfig = merge([
-    parts.loadProductionPlugins()
-]);
-
-module.exports = (env = CONFIG.env) => {
-    if (analyze) {
-        return merge(commonConfig, analyzeConfig);
+module.exports = (NODE_ENV = CONFIG.env) => {
+    if (ANALYZE_ENV) {
+        return webpackConfig;
     }
 
-    if (env === 'production') {
-        return merge(commonConfig, prodConfig);
+    if (NODE_ENV === 'production') {
+        return merge(webpackConfig, webpackProdOptions);
     }
 
-    return merge(commonConfig, devConfig);
-}
+    return merge(webpackConfig, webpackDevOptions);
+};
