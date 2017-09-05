@@ -4,10 +4,10 @@
   "description": "Semantic UI theme development webpack starter kit",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon --watch webpack.config.js --exec \"webpack-dev-server --open --progress --colors\"",
+    "start": "nodemon --watch webpack.config.js --exec \"webpack-dev-server --progress\"",
     "analyze": "cross-env ANALYZE_ENV=true npm run build",
-    "watch": "cross-env NODE_ENV=development webpack -d --watch --progress --colors",
-    "build": "cross-env NODE_ENV=production webpack -p --progress --colors",
+    "watch": "cross-env NODE_ENV=development webpack --watch --progress --colors",
+    "build": "cross-env NODE_ENV=production webpack --progress --colors",
     "deploy": "",
     "test": "echo \"Error: no test specified\" && exit 1"
   },

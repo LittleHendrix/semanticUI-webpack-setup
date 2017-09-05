@@ -1,6 +1,7 @@
+'use strict';
+
 const webpack = require('webpack');
 const path = require('path');
-const merge = require('webpack-merge');
 
 const CONFIG = require('./config');
 
@@ -83,7 +84,7 @@ const prodPlugins = [
         },
         mangle: true,
         beautify: false,
-        sourceMap: false,
+        sourceMap: true,
         ie8: false,
         output: {
             comments: false

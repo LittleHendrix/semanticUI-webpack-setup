@@ -1,6 +1,7 @@
+'use strict';
+
 const webpack = require('webpack');
 const path = require('path');
-const merge = require('webpack-merge');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const CONFIG = require('./config');
@@ -8,7 +9,10 @@ const CONFIG = require('./config');
 const loaders = [
     {
         test: /\.less$/,
-        // include: '',
+        include: [
+            // path.resolve(CONFIG.paths.libpaths.npm, 'semantic-ui-less'),
+            CONFIG.paths.src
+        ],
         // exclude: '',
         use: ExtractTextPlugin.extract({
             use: [
@@ -54,10 +58,10 @@ const loaders = [
     {
         test: /\.(js|jsx)$/,
         include: CONFIG.paths.src,
-        exclude: [
-            CONFIG.paths.libpaths.npm,
-            CONFIG.paths.libpaths.bower
-        ],
+        // exclude: [
+        //     CONFIG.paths.libpaths.npm,
+        //     CONFIG.paths.libpaths.bower
+        // ],
         use: [
             {
                 loader: 'babel-loader',

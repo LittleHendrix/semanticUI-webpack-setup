@@ -1,3 +1,5 @@
+'use strict';
+
 const webpack = require('webpack');
 const path = require('path');
 const merge = require('webpack-merge');
@@ -16,12 +18,22 @@ const pluginsConfig = require('./config/plugins-webpack.config')(CONFIG.env, ANA
  * production config, and keys with little config overlap between dev and prod).
  * @type {Object}
  */
-const webpackDevOptions = merge([
+const webpackDevOptions =
     {
-        devtool: '#cheap-module-eval-source-map',
         devServer: {
+            open: true,
             historyApiFallback: true,
-            stats: 'errors-only',
+            stats: {
+                assets: true,
+                assetsSort: 'field',
+                colors: true,
+                errors: true,
+                errorDetails: true,
+                reasons: true,
+                timings: true,
+                version: true,
+                warnings: true
+            },
             compress: true,
             contentBase: CONFIG.paths.dist,
             host: CONFIG.host.DEV_HOST,
@@ -39,30 +51,28 @@ const webpackDevOptions = merge([
             path: CONFIG.paths.dist,
             filename: "semantic.min.js"
         },
-    }
-]);
+    };
 
 /********************** WEBPACK PRODUCTION CONFIG (MERGES INTO BASE CONFIG) ***********************/
 /**
  * Production-specific webpack configuration
  * @type {Object}
  */
-const webpackProdOptions = merge([
+const webpackProdOptions =
     {
         output: {
             path: CONFIG.paths.dist,
             publicPath: "/",
             filename: "semantic.min.js"
         }
-    }
-]);
+    };
 
 /*********************************** BASE WEBPACK CONFIG OBJECT ***********************************/
 /**
  * Actual webpack config object.
  * Environment-specific Webpack settings get merged into this base object.
  */
-const webpackConfig = merge([
+const webpackConfig =
     {
         watch: (CONFIG.env === 'development'),
 
@@ -84,11 +94,16 @@ const webpackConfig = merge([
                 // point all config ref in Semantic UI source files to our local config file
                 '../../theme.config$': path.join(CONFIG.paths.src, 'semantic/theme.config')
             }
-        }
-    }
+        },
+        performance: {
+            hints: 'warning'
+        },
+        profile: true
+    };
     // ENVIRONMENT SPECIFIC BUILD OPTIONS
     // (CONFIG.env === 'development') ? webpackDevOptions : webpackProdOptions
-]);
+
+// module.exports = webpackConfig;
 
 module.exports = (NODE_ENV = CONFIG.env) => {
     if (ANALYZE_ENV) {
@@ -96,8 +111,8 @@ module.exports = (NODE_ENV = CONFIG.env) => {
     }
 
     if (NODE_ENV === 'production') {
-        return merge(webpackConfig, webpackProdOptions);
+        return merge(webpackConfig, webpackProdOptions, { devtool: '#source-map' });
     }
 
-    return merge(webpackConfig, webpackDevOptions);
+    return merge(webpackConfig, webpackDevOptions, { devtool: '#cheap-module-source-map' });
 };

@@ -1,10 +1,10 @@
+'use strict';
+
 const webpack = require('webpack');
 const path = require('path');
 
 const LessPluginAutoPrefix = require('less-plugin-autoprefix');
 const autoprefixBrowsers = ['last 2 versions', '> 1%', 'opera 12.1', 'bb 10', 'android 4'];
-
-let bowerSettings = {};
 
 module.exports = {
     paths: {
@@ -21,9 +21,10 @@ module.exports = {
         DEV_HOST: 'localhost',
     },
     port: {
-        DEV_PORT: 8080
+        DEV_PORT: 9999
     },
     cssLoaderOptions: {
+        minimize: process.env.NODE_ENV === 'production',
         sourceMap: true
     },
     lessOptions: {
