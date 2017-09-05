@@ -4,12 +4,17 @@ const path = require('path');
 const LessPluginAutoPrefix = require('less-plugin-autoprefix');
 const autoprefixBrowsers = ['last 2 versions', '> 1%', 'opera 12.1', 'bb 10', 'android 4'];
 
+let bowerSettings = {};
+
 module.exports = {
-    PATHS: {
+    paths: {
         root: path.join(__dirname, '..'),
         src: path.join(__dirname, '..', 'src'),
         dist: path.join(__dirname, '..', 'dist'),
-        libPaths: path.join(__dirname, '..', 'node_modules')
+        libpaths: {
+            npm: path.join(__dirname, '..', 'node_modules'),
+            bower: path.join(__dirname, '..', 'bower_components')
+        }
     },
     env: process.env.NODE_ENV || 'development',
     host: {

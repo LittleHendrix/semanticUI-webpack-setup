@@ -53,10 +53,10 @@ const loaders = [
     },
     {
         test: /\.(js|jsx)$/,
-        include: CONFIG.PATHS.src,
+        include: CONFIG.paths.src,
         exclude: [
-            path.join(CONFIG.PATHS.root, 'node_modules'),
-            path.join(CONFIG.PATHS.root, 'bower_components')
+            CONFIG.paths.libpaths.npm,
+            CONFIG.paths.libpaths.bower
         ],
         use: [
             {

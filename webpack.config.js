@@ -23,11 +23,11 @@ const webpackDevOptions = merge([
             historyApiFallback: true,
             stats: 'errors-only',
             compress: true,
-            contentBase: CONFIG.PATHS.dist,
+            contentBase: CONFIG.paths.dist,
             host: CONFIG.host.DEV_HOST,
             port: CONFIG.port.DEV_PORT,
             inline: true,
-            hot: true,
+            hot: false,
             noInfo: true,
             overlay: {
                 errors: true,
@@ -36,7 +36,7 @@ const webpackDevOptions = merge([
             watchContentBase: true
         },
         output: {
-            path: CONFIG.PATHS.dist,
+            path: CONFIG.paths.dist,
             filename: "semantic.min.js"
         },
     }
@@ -50,7 +50,7 @@ const webpackDevOptions = merge([
 const webpackProdOptions = merge([
     {
         output: {
-            path: CONFIG.PATHS.dist,
+            path: CONFIG.paths.dist,
             publicPath: "/",
             filename: "semantic.min.js"
         }
@@ -66,11 +66,11 @@ const webpackConfig = merge([
     {
         watch: (CONFIG.env === 'development'),
 
-        context: CONFIG.PATHS.root,
-        entry: path.join(CONFIG.PATHS.src, 'index.js'),
+        context: CONFIG.paths.root,
+        entry: path.join(CONFIG.paths.src, 'index.js'),
 
         output: {
-            path: CONFIG.PATHS.dist,
+            path: CONFIG.paths.dist,
             filename: "semantic.min.js",
         },
 
@@ -82,7 +82,7 @@ const webpackConfig = merge([
             extensions: ['.js', '.jsx', '.json', '.ts', '.tsx'],
             alias: {
                 // point all config ref in Semantic UI source files to our local config file
-                '../../theme.config$': path.join(CONFIG.PATHS.src, 'semantic/theme.config')
+                '../../theme.config$': path.join(CONFIG.paths.src, 'semantic/theme.config')
             }
         }
     }

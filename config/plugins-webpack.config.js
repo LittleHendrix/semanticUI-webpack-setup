@@ -29,10 +29,16 @@ const basePlugins = (NODE_ENV, ANALYZE_ENV) => [
     new HtmlWebpackPlugin({
         title: 'Semantic UI theme starter kit',
         filename: 'index.html',
-        inject: true
+        inject: true, // other options are - 'head' | 'body' | false
+        minify: {
+            removeComments: true
+        },
+        hash: true, // append a unique webpack compilation hash to all included scripts and CSS files
+        cache: true,
+        showErrors: true
     }),
     new FaviconsWebpackPlugin({
-        logo: path.join(CONFIG.PATHS.src, 'woodmac-logo.png'),
+        logo: path.join(CONFIG.paths.src, 'woodmac-logo.png'),
         prefix: 'icons-[hash]/',
         persistentCache: true,
         inject: true,
@@ -45,17 +51,17 @@ const basePlugins = (NODE_ENV, ANALYZE_ENV) => [
             windows: false
         }
     }),
-    new webpack.ProvidePlugin({
-        $: 'jquery',
-        jQuery: 'jquery'
-    })
+    // new webpack.ProvidePlugin({
+    //     $: 'jquery',
+    //     jQuery: 'jquery'
+    // })
 ];
 
 /**
  * Development-only Webpack plugins
  */
 const devPlugins = [
-    new webpack.HotModuleReplacementPlugin()
+    // new webpack.HotModuleReplacementPlugin()
 ];
 
 /**
@@ -90,8 +96,8 @@ const prodPlugins = [
         threshold: 10240,
         minRatio: 0.8
     }),
-    new CleanWebpackPlugin([CONFIG.PATHS.dist], {
-        root: CONFIG.PATHS.root,
+    new CleanWebpackPlugin([CONFIG.paths.dist], {
+        root: CONFIG.paths.root,
         verbose: true,
         dry: false,
         exclude: []
