@@ -1,0 +1,18 @@
+
+.breakpoint-min (@minWidth; @rules) when not (@minWidth = "") {
+    @media only screen and (min-width: @minWidth) {
+        @rules();
+    }
+}
+
+.breakpoint-max (@maxWidth; @rules) when not (@maxWidth = "") {
+    @media only screen and (max-width: (@maxWidth - 1px)) {
+        @rules();
+    }
+}
+
+.breakpoint-range (@minWidth; @maxWidth; @rules) when not ((@minWidth = "") and (@maxWidth = "")) {
+    @media only screen and (min-width: @minWidth) and (max-width: (@maxWidth - 1px)) {
+        @rules();
+    }
+}

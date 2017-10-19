@@ -5,3 +5,5 @@
 import './semantic/semantic.less';
 // import only the selected semantic JS modules
 import './semantic/semantic';
+
+import './js/app';

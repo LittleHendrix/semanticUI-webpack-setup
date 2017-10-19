@@ -1,6 +1,7 @@
 
 # Ignore build directory
 dist/
+development/
 
 # Created by https://www.gitignore.io/api/node,visualstudio,visualstudiocode
 

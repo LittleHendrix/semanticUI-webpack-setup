@@ -6,7 +6,7 @@
 //        Fonts
 // --------------------*/
 
-// @fontName          : 'Lato';
+@fontName          : 'Roboto';
 // @fontSmoothing     : antialiased;
 
 // @headerFont        : @fontName, 'Helvetica Neue', Arial, Helvetica, sans-serif;
@@ -215,19 +215,19 @@
 // --------------------*/
 
 // /*---  Colors  ---*/
-// @red              : #DB2828;
+@red              : #85102E;
 // @orange           : #F2711C;
-// @yellow           : #FBBD08;
+@yellow           : #eaa814;
 // @olive            : #B5CC18;
-// @green            : #21BA45;
-// @teal             : #00B5AD;
-// @blue             : #2185D0;
-// @violet           : #6435C9;
-// @purple           : #A333C8;
+@green            : #14472A;
+@teal             : #126474;
+@blue             : #002257;
+@violet           : #776791;
+@purple           : #5A1B47;
 // @pink             : #E03997;
 // @brown            : #A5673F;
-// @grey             : #767676;
-// @black            : #1B1C1D;
+@grey             : #adafb2;
+@black            : #232323;
 
 // /*---  Light Colors  ---*/
 // @lightRed         : #FF695E;
@@ -236,12 +236,12 @@
 // @lightOlive       : #D9E778;
 // @lightGreen       : #2ECC40;
 // @lightTeal        : #6DFFFF;
-// @lightBlue        : #54C8FF;
+@lightBlue        : #00a4e3;
 // @lightViolet      : #A291FB;
 // @lightPurple      : #DC73FF;
 // @lightPink        : #FF8EDF;
 // @lightBrown       : #D67C1C;
-// @lightGrey        : #DCDDDE;
+@lightGrey        : #f8f8f8;
 // @lightBlack       : #545454;
 
 // /*---   Neutrals  ---*/
